@@ -1,12 +1,10 @@
-import 'dart:convert';
-
 import 'package:dio/dio.dart';
 import 'package:movie_app/consts/api.dart';
-import 'package:movie_app/models/credits.dart';
-import 'package:movie_app/models/movieDetail.dart';
-import 'package:movie_app/models/movies.dart';
-import 'package:movie_app/models/recommendations.dart';
-import 'package:movie_app/models/searchMovie.dart';
+import 'package:movie_app/models/movie_data_models/credits.dart';
+import 'package:movie_app/models/movie_data_models/movie_detail.dart';
+import 'package:movie_app/models/movie_data_models/movies.dart';
+import 'package:movie_app/models/movie_data_models/recommendations.dart';
+import 'package:movie_app/models/movie_data_models/search_movie.dart';
 
 class MovieDatas {
   Dio dio = Dio();
@@ -54,7 +52,6 @@ class MovieDatas {
       final List data = response.data["results"];
       return data.map((e) => Recommendations.fromJson(e)).toList();
     } catch (e) {
-      print(e);
       throw Exception(e);
     }
   }
@@ -68,7 +65,6 @@ class MovieDatas {
       final List data = response.data["cast"];
       return data.map((e) => Cast.fromJson(e)).toList();
     } catch (e) {
-      print(e);
       throw Exception(e);
     }
   }
@@ -95,7 +91,7 @@ class MovieDatas {
     }
   }
 
-  Future<Search> movieSearchPage(
+  Future<Search> movieSearchLastPage(
     String query,
   ) async {
     try {

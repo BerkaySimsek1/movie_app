@@ -2,22 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:movie_app/bloc/movie_next_page.dart';
 import 'package:movie_app/consts/api.dart';
-import 'package:movie_app/models/movies.dart';
+import 'package:movie_app/models/movie_data_models/movies.dart';
 import 'package:movie_app/screens/detail.dart';
 import 'package:movie_app/service/api2.dart';
 
 class SeeAll extends StatefulWidget {
-  SeeAll({super.key, required this.whichList});
-  String whichList;
+  const SeeAll({super.key, required this.whichList});
+  final String whichList;
   @override
   State<SeeAll> createState() => _SeeAllState();
 }
 
 // provider ile sayfa atlamayı yap
 class _SeeAllState extends State<SeeAll> {
+  ScrollController controller = ScrollController();
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     BlocProvider.of<pageControllerCubit>(context).resetPage();
   }
@@ -41,6 +41,9 @@ class _SeeAllState extends State<SeeAll> {
                         if (page > 1) {
                           BlocProvider.of<pageControllerCubit>(context)
                               .previousPage();
+                          controller.animateTo(0,
+                              duration: const Duration(seconds: 1),
+                              curve: Curves.fastLinearToSlowEaseIn);
                         }
                       },
                       icon: const Icon(Icons.arrow_back));
@@ -49,6 +52,9 @@ class _SeeAllState extends State<SeeAll> {
               IconButton(
                   onPressed: () {
                     BlocProvider.of<pageControllerCubit>(context).nextPage();
+                    controller.animateTo(0,
+                        duration: const Duration(seconds: 1),
+                        curve: Curves.fastLinearToSlowEaseIn);
                   },
                   icon: const Icon(Icons.arrow_forward)),
             ],
@@ -64,6 +70,7 @@ class _SeeAllState extends State<SeeAll> {
             builder: (context, snapshot) {
               if (snapshot.hasData) {
                 return GridView.builder(
+                  controller: controller,
                   itemCount: snapshot.data!.length,
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2,
@@ -72,11 +79,11 @@ class _SeeAllState extends State<SeeAll> {
                   ),
                   itemBuilder: (context, index) {
                     final value = snapshot.data![index];
-                    return customGridCard(value: value);
+                    return CustomGridCard(value: value);
                   },
                 );
               } else {
-                return CircularProgressIndicator();
+                return const CircularProgressIndicator();
               }
             },
           );
@@ -86,8 +93,8 @@ class _SeeAllState extends State<SeeAll> {
   }
 }
 
-class customGridCard extends StatelessWidget {
-  const customGridCard({
+class CustomGridCard extends StatelessWidget {
+  const CustomGridCard({
     Key? key,
     required this.value,
   }) : super(key: key);

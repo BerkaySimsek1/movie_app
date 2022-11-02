@@ -40,7 +40,7 @@ class MovieDetails {
 
   bool? adult;
   String? backdropPath;
-  dynamic? belongsToCollection;
+  dynamic belongsToCollection;
   int? budget;
   List<Genre>? genres;
   String? homepage;

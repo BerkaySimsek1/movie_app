@@ -1,10 +1,8 @@
+import 'dart:async';
 import 'dart:math';
-
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:movie_app/bloc/movie_next_page.dart';
 import 'package:movie_app/consts/api.dart';
-import 'package:movie_app/models/movies.dart';
+import 'package:movie_app/models/movie_data_models/movies.dart';
 import 'package:movie_app/screens/detail.dart';
 import 'package:movie_app/screens/see_all.dart';
 import 'package:movie_app/service/api2.dart';
@@ -18,25 +16,26 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> {
   late int randomMovieId;
+  late int randompage;
+  late int randomIndex;
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    deneme();
+    randomPage();
   }
 
-  void deneme() async {
-    int randomPage = Random().nextInt(500);
-    int randomIndex = Random().nextInt(20);
-    List<Movies> list = await MovieDatas().getRandomMovie(randomPage);
+  Future<void> randomPage() async {
+    randompage = Random().nextInt(500);
+    randomIndex = Random().nextInt(20);
+    setState(() {});
+
+    List<Movies> list = await MovieDatas().getPopularMovies(randompage);
+
     randomMovieId = list[randomIndex].id!;
   }
 
   @override
   Widget build(BuildContext context) {
-    var size = MediaQuery.of(context).size;
-    var sizeWidth = size.width;
-    var sizeHeight = size.height;
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -46,16 +45,16 @@ class _MainPageState extends State<MainPage> {
         actions: [
           TextButton(
               onPressed: () {
-                setState(() {
-                  deneme();
+                randomPage();
+                Timer(const Duration(milliseconds: 100), () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              DetailPage(movieId: randomMovieId)));
                 });
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) =>
-                            DetailPage(movieId: randomMovieId)));
               },
-              child: Text("Get a movie"))
+              child: const Text("Get a movie"))
         ],
       ),
       body: Column(
@@ -77,7 +76,7 @@ class _MainPageState extends State<MainPage> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => SeeAll(
+                          builder: (context) => const SeeAll(
                             whichList: "Popular",
                           ),
                         ));
@@ -96,7 +95,7 @@ class _MainPageState extends State<MainPage> {
                       itemCount: snapshot.data!.length,
                       itemBuilder: (context, index) {
                         final value = snapshot.data![index];
-                        return customCard(value: value);
+                        return CustomCard(value: value);
                       });
                 } else {
                   return const Text("");
@@ -121,7 +120,7 @@ class _MainPageState extends State<MainPage> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => SeeAll(whichList: ""),
+                          builder: (context) => const SeeAll(whichList: ""),
                         ));
                   },
                   child: const Text("See all"))
@@ -138,7 +137,7 @@ class _MainPageState extends State<MainPage> {
                       itemCount: snapshot.data!.length,
                       itemBuilder: (context, index) {
                         final value = snapshot.data![index];
-                        return customCard(value: value);
+                        return CustomCard(value: value);
                       });
                 } else {
                   return const Text("");
@@ -148,19 +147,12 @@ class _MainPageState extends State<MainPage> {
           ),
         ],
       ),
-      bottomNavigationBar: BottomNavigationBar(items: const [
-        BottomNavigationBarItem(icon: Icon(Icons.favorite), label: "Hi"),
-        BottomNavigationBarItem(icon: Icon(Icons.favorite), label: "Hi"),
-        BottomNavigationBarItem(icon: Icon(Icons.favorite), label: "Hi"),
-        BottomNavigationBarItem(icon: Icon(Icons.favorite), label: "Hi"),
-        BottomNavigationBarItem(icon: Icon(Icons.favorite), label: "Hi")
-      ]),
     );
   }
 }
 
-class customCard extends StatelessWidget {
-  const customCard({
+class CustomCard extends StatelessWidget {
+  const CustomCard({
     Key? key,
     required this.value,
   }) : super(key: key);
