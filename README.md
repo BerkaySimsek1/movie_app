@@ -1,6 +1,6 @@
 # movie_app
 
-A new Flutter project.
+Movie app with firebase and TMDB API.
 
 ## Getting Started
 
