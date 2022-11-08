@@ -17,6 +17,7 @@ class MovieDatas {
       final List data = response.data["results"];
       return data.map((e) => Movies.fromJson(e)).toList();
     } catch (e) {
+      print(e);
       throw Exception(e);
     }
   }
@@ -65,6 +66,7 @@ class MovieDatas {
       final List data = response.data["cast"];
       return data.map((e) => Cast.fromJson(e)).toList();
     } catch (e) {
+      print(e);
       throw Exception(e);
     }
   }

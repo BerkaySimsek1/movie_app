@@ -78,8 +78,8 @@ class Cast {
         character: json["character"],
         creditId: json["credit_id"],
         order: json["order"],
-        department: json["department"],
-        job: json["job"],
+        department: json["department"] ?? "",
+        job: json["job"] ?? "",
       );
 
   Map<String, dynamic> toJson() => {

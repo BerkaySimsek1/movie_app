@@ -4,6 +4,8 @@
 
 import 'dart:convert';
 
+import 'package:intl/intl.dart';
+
 Movies popularMoviesFromJson(String str) => Movies.fromJson(json.decode(str));
 
 String popularMoviesToJson(Movies data) => json.encode(data.toJson());
@@ -41,22 +43,25 @@ class Movies {
   double? voteAverage;
   int? voteCount;
 
-  factory Movies.fromJson(Map<String, dynamic> json) => Movies(
-        adult: json["adult"],
-        backdropPath: json["backdrop_path"],
-        genreIds: List<int>.from(json["genre_ids"].map((x) => x)),
-        id: json["id"],
-        originalLanguage: json["original_language"],
-        originalTitle: json["original_title"],
-        overview: json["overview"],
-        popularity: json["popularity"].toDouble(),
-        posterPath: json["poster_path"],
-        releaseDate: DateTime.parse(json["release_date"]),
-        title: json["title"],
-        video: json["video"],
-        voteAverage: json["vote_average"].toDouble(),
-        voteCount: json["vote_count"],
-      );
+  factory Movies.fromJson(Map<String, dynamic> json) {
+    var formatter = DateFormat("yyyy-MM-dd");
+    return Movies(
+      adult: json["adult"],
+      backdropPath: json["backdrop_path"],
+      genreIds: List<int>.from(json["genre_ids"].map((x) => x)),
+      id: json["id"],
+      originalLanguage: json["original_language"],
+      originalTitle: json["original_title"],
+      overview: json["overview"],
+      popularity: json["popularity"].toDouble(),
+      posterPath: json["poster_path"],
+      releaseDate: DateTime.tryParse(json["release_date"]),
+      title: json["title"],
+      video: json["video"],
+      voteAverage: json["vote_average"].toDouble(),
+      voteCount: json["vote_count"],
+    );
+  }
 
   Map<String, dynamic> toJson() => {
         "adult": adult,
@@ -69,7 +74,7 @@ class Movies {
         "popularity": popularity,
         "poster_path": posterPath,
         "release_date":
-            "${releaseDate!.year.toString()}-${releaseDate!.month.toString()}-${releaseDate!.day.toString()}",
+            "${(releaseDate?.year.toString().padLeft(4, '0'))}-${(releaseDate?.month.toString().padLeft(2, '0')) ?? ""}-${(releaseDate?.day.toString().padLeft(2, '0')) ?? ""}",
         "title": title,
         "video": video,
         "vote_average": voteAverage,

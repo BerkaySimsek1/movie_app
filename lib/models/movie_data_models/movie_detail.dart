@@ -72,7 +72,7 @@ class MovieDetails {
         genres: List<Genre>.from(json["genres"].map((x) => Genre.fromJson(x))),
         homepage: json["homepage"],
         id: json["id"],
-        imdbId: json["imdb_id"],
+        imdbId: json["imdb_id"] ?? 0,
         originalLanguage: json["original_language"],
         originalTitle: json["original_title"],
         overview: json["overview"],
@@ -84,7 +84,7 @@ class MovieDetails {
         productionCountries: List<ProductionCountry>.from(
             json["production_countries"]
                 .map((x) => ProductionCountry.fromJson(x))),
-        releaseDate: DateTime.parse(json["release_date"]),
+        releaseDate: DateTime.tryParse(json["release_date"]),
         revenue: json["revenue"],
         runtime: json["runtime"],
         spokenLanguages: List<SpokenLanguage>.from(
@@ -99,13 +99,13 @@ class MovieDetails {
 
   Map<String, dynamic> toJson() => {
         "adult": adult,
-        "backdrop_path": backdropPath,
+        "backdrop_path": backdropPath ?? "",
         "belongs_to_collection": belongsToCollection,
         "budget": budget,
         "genres": List<dynamic>.from(genres!.map((x) => x.toJson())),
         "homepage": homepage,
         "id": id,
-        "imdb_id": imdbId,
+        "imdb_id": imdbId ?? 0,
         "original_language": originalLanguage,
         "original_title": originalTitle,
         "overview": overview,
@@ -166,7 +166,7 @@ class ProductionCompany {
   factory ProductionCompany.fromJson(Map<String, dynamic> json) =>
       ProductionCompany(
         id: json["id"],
-        logoPath: json["logo_path"] == null ? null : json["logo_path"],
+        logoPath: json["logo_path"]??null,
         name: json["name"],
         originCountry: json["origin_country"],
       );

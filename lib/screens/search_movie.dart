@@ -15,11 +15,11 @@ class SearchMovie extends StatefulWidget {
 class _SearchMovieState extends State<SearchMovie> {
   String query = "";
   int page = 1;
-  //totalpage i almak için bir yol bul.
   int totalPage = 1;
   bool searchBar = true;
   bool isEmpty = false;
   ScrollController cont = ScrollController();
+
   Future<void> getTotalPage() async {
     var result = await MovieDatas().movieSearchLastPage(query);
     setState(() {
@@ -48,7 +48,6 @@ class _SearchMovieState extends State<SearchMovie> {
                 } else {
                   searchBar = false;
                   page = 1;
-                  getTotalPage();
                 }
               },
               onChanged: (value) {
@@ -61,9 +60,11 @@ class _SearchMovieState extends State<SearchMovie> {
                   setState(() {
                     searchBar = false;
                     page = 1;
-                    getTotalPage();
+
                     if (query == '') {
                       searchBar = true;
+                    } else {
+                      getTotalPage();
                     }
                   });
                 },
@@ -75,11 +76,10 @@ class _SearchMovieState extends State<SearchMovie> {
             searchBar
                 ? Expanded(
                     child: FutureBuilder<List<Movies>>(
-                      future: MovieDatas().getPopularMovies(page),
+                      future: MovieDatas().getTopRatedMovies(1),
                       builder: (context, snapshot) {
                         if (snapshot.hasData) {
                           return ListView.builder(
-                              controller: cont,
                               itemCount: snapshot.data!.length,
                               itemBuilder: (context, index) {
                                 final value = snapshot.data![index];
@@ -163,7 +163,7 @@ class _SearchMovieState extends State<SearchMovie> {
                                                     SizedBox(
                                                         width: sizeWidth / 2,
                                                         child:
-                                                            Text(value.title!))
+                                                            Text(value.title!)),
                                                   ],
                                                 ),
                                               )),

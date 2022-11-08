@@ -1,5 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:movie_app/firebase_methods/auth_methods.dart';
+import 'package:movie_app/screens/commentScreen.dart';
 import 'package:movie_app/screens/login_screen.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -10,6 +12,24 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
+  String username = "";
+
+  @override
+  void initState() {
+    getUsername();
+    super.initState();
+  }
+
+  Future<void> getUsername() async {
+    await FirebaseFirestore.instance
+        .collection("users")
+        .doc(Auth().currentuser!.uid)
+        .get()
+        .then((value) => username = value.data()!["username"]);
+    Future.delayed(const Duration(microseconds: 1));
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -25,9 +45,17 @@ class _ProfilePageState extends State<ProfilePage> {
                 child: Text("Pic"),
               ),
             ),
-            const Text("Username"),
+            Text(username),
             ElevatedButton(onPressed: () {}, child: const Text("Profile")),
-            ElevatedButton(onPressed: () {}, child: const Text("Favorite")),
+            ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ProfileCommentPage(),
+                      ));
+                },
+                child: const Text("Comments")),
             ElevatedButton(onPressed: () {}, child: const Text("Settings")),
             ElevatedButton(
                 onPressed: () {

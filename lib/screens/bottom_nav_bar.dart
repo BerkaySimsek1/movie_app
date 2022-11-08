@@ -48,12 +48,12 @@ class _BottomNavBarState extends State<BottomNavBar> {
           ),
           BottomNavigationBarItem(
               icon: Icon(
-                Icons.favorite,
+                Icons.live_tv_sharp,
               ),
               label: "Watchlist"),
           BottomNavigationBarItem(
               icon: Icon(
-                Icons.favorite,
+                Icons.remove_red_eye_outlined,
               ),
               label: "Watched"),
           BottomNavigationBarItem(

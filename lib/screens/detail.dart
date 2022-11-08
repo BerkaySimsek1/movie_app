@@ -1,6 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:movie_app/consts/api.dart';
 import 'package:movie_app/consts/genres.dart';
+import 'package:movie_app/firebase_methods/auth_methods.dart';
+import 'package:movie_app/firebase_methods/firestore_methods.dart';
 import 'package:movie_app/models/movie_data_models/credits.dart';
 import 'package:movie_app/models/movie_data_models/movie_detail.dart';
 import 'package:movie_app/models/movie_data_models/recommendations.dart';
@@ -15,6 +19,74 @@ class DetailPage extends StatefulWidget {
 }
 
 class _DetailPageState extends State<DetailPage> {
+  late bool isAddedWatchlist = false;
+  bool isMovieWatched = false;
+  double rate = 1;
+  TextEditingController commentMovietf = TextEditingController();
+  String username = "";
+
+  Future<void> getUsername() async {
+    await FirebaseFirestore.instance
+        .collection("users")
+        .doc(Auth().currentuser!.uid)
+        .get()
+        .then((value) => username = value.data()!["username"]);
+    Future.delayed(const Duration(microseconds: 1));
+    setState(() {});
+  }
+
+  void isWatchlistAdded() {
+    FirebaseFirestore.instance
+        .collection("users")
+        .doc(Auth().currentuser!.uid)
+        .collection("watchlist")
+        .get()
+        .then(
+      (value) {
+        if (value.docs.isNotEmpty) {
+          int i = 0;
+          int k = 0;
+          value.docs.forEach((element) {
+            if (element.id == widget.movieId.toString()) {
+              k = i;
+              isAddedWatchlist = value.docs[k].data()["isAdded"];
+            }
+            i++;
+          });
+        } else {}
+      },
+    );
+  }
+
+  void isMovieInWatched() {
+    FirebaseFirestore.instance
+        .collection("users")
+        .doc(Auth().currentuser!.uid)
+        .collection("watched")
+        .get()
+        .then((value) {
+      if (value.docs.isNotEmpty) {
+        int i = 0;
+        int k = 0;
+        value.docs.forEach((element) {
+          if (element.id == widget.movieId.toString()) {
+            k = i;
+            isMovieWatched = value.docs[k].data()["isAdded"];
+          }
+          i++;
+        });
+      } else {}
+    });
+  }
+
+  @override
+  void initState() {
+    getUsername();
+    super.initState();
+    isWatchlistAdded();
+    isMovieInWatched();
+  }
+
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
@@ -68,29 +140,149 @@ class _DetailPageState extends State<DetailPage> {
                           ),
                         ],
                       ),
-
-                      // firebase kurduğun zaman watclist ve watched diye 2 farklı liste tanımla eğer istenen film watchlistteyse veya
-                      // izlendiyse çıkar diye bir buton oluştur.
-                      // bu işlemleri provider ile yap(doğru anladıysan)
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
                           SizedBox(
                               width: sizeWidth / 2.1,
-                              child: ElevatedButton(
-                                  onPressed: () {},
-                                  child: const Text("Add watchlist"))),
+                              child: isAddedWatchlist
+                                  ? ElevatedButton(
+                                      onPressed: () {
+                                        setState(() {
+                                          FirestoreMethods().deleteWatchlist(
+                                              value.id!.toString());
+                                          isAddedWatchlist = false;
+                                        });
+                                      },
+                                      child:
+                                          const Text("Remove from watchlist"))
+                                  : ElevatedButton(
+                                      onPressed: () {
+                                        setState(() {
+                                          FirestoreMethods()
+                                              .validateAndSubmitWatchlist(
+                                                  value.id!.toString(),
+                                                  true,
+                                                  value.posterPath!,
+                                                  value.title!);
+                                          isWatchlistAdded();
+                                        });
+                                      },
+                                      child: const Text("Add watchlist"))),
                           SizedBox(
                               width: sizeWidth / 2.1,
                               child: ElevatedButton(
-                                  onPressed: () {},
-                                  child: const Text("Watched"))),
+                                  onPressed: () {
+                                    showDialog(
+                                      context: context,
+                                      builder: (context) {
+                                        return AlertDialog(
+                                          title: const Text("Rate this movie"),
+                                          actions: [
+                                            RatingBar.builder(
+                                              initialRating: 3,
+                                              minRating: 1,
+                                              direction: Axis.horizontal,
+                                              allowHalfRating: true,
+                                              itemCount: 5,
+                                              itemPadding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 4.0),
+                                              itemBuilder: (context, _) =>
+                                                  const Icon(
+                                                Icons.star,
+                                                color: Colors.amber,
+                                              ),
+                                              onRatingUpdate: (rating) {
+                                                rate = rating;
+                                              },
+                                            ),
+                                            TextField(
+                                              controller: commentMovietf,
+                                              decoration: InputDecoration(
+                                                  hintText: isMovieWatched
+                                                      ? "Update your comment"
+                                                      : "Comment here."),
+                                            ),
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                isMovieWatched
+                                                    ? ElevatedButton(
+                                                        onPressed: () {
+                                                          setState(() {
+                                                            FirestoreMethods()
+                                                                .deleteWatched(value
+                                                                    .id!
+                                                                    .toString());
+                                                            FirestoreMethods()
+                                                                .deleteComment(value
+                                                                    .id
+                                                                    .toString());
+                                                            isMovieWatched =
+                                                                false;
+                                                            Navigator.pop(
+                                                                context);
+                                                          });
+                                                        },
+                                                        child: const Text(
+                                                            "Remove"))
+                                                    : const Text(""),
+                                                ElevatedButton(
+                                                    onPressed: () {
+                                                      FirestoreMethods()
+                                                          .validateAndSubmitWatched(
+                                                              true,
+                                                              value.id
+                                                                  .toString(),
+                                                              value.posterPath!,
+                                                              value.title!,
+                                                              rate);
+
+                                                      FirestoreMethods()
+                                                          .validateAndSubmitComments(
+                                                        commentMovietf.text,
+                                                        value.id.toString(),
+                                                        username,
+                                                        rate,
+                                                      );
+
+                                                      FirestoreMethods()
+                                                          .validateAndSubmitCurrentUserComments(
+                                                        commentMovietf.text,
+                                                        value.id.toString(),
+                                                        rate,
+                                                        value.title!,
+                                                        value.posterPath!,
+                                                      );
+
+                                                      isMovieInWatched();
+                                                      setState(() {});
+                                                      Navigator.pop(context);
+                                                    },
+                                                    child: isMovieWatched
+                                                        ? const Text("Update")
+                                                        : const Text(
+                                                            "Add watched.")),
+                                              ],
+                                            )
+                                          ],
+                                        );
+                                      },
+                                    );
+                                  },
+                                  child: isMovieWatched
+                                      ? const Text(
+                                          "Update or remove from watched")
+                                      : const Text("Watched"))),
                         ],
                       ),
                       Padding(
                         padding: const EdgeInsets.only(top: 8.0, left: 8),
                         child: Text(
-                          "${value.releaseDate!.year}-${value.releaseDate!.month}-${value.releaseDate!.day}",
+                          "${value.releaseDate!.year}-${value.releaseDate?.month}-${value.releaseDate?.day}",
                           style: const TextStyle(fontSize: 18),
                         ),
                       ),
@@ -186,7 +378,7 @@ class _DetailPageState extends State<DetailPage> {
                         style: Theme.of(context).textTheme.headline5,
                       ),
                       SizedBox(
-                        height: 300,
+                        height: 200,
                         child: FutureBuilder<List<Cast>>(
                           future: MovieDatas().getCharacters(value.id!),
                           builder: (context, snapshot) {
@@ -205,11 +397,55 @@ class _DetailPageState extends State<DetailPage> {
                           },
                         ),
                       ),
+                      const Text(
+                        "Comments: ",
+                        style: TextStyle(fontSize: 24),
+                      ),
+                      const Text(
+                        "(To make a comment you have to add this movie to watched.)",
+                        style: TextStyle(fontSize: 12),
+                      ),
+
+                      SizedBox(
+                        height: 200,
+                        child: StreamBuilder(
+                          stream: FirebaseFirestore.instance
+                              .collection("comments")
+                              .doc(value.id.toString())
+                              .collection("comment")
+                              .snapshots(),
+                          builder: (context, snapshot) {
+                            if (snapshot.hasData) {
+                              if (snapshot.data!.docs.isEmpty) {
+                                return const Center(
+                                    child: Text("There is no comment yet."));
+                              } else {
+                                return Column(
+                                  children: snapshot.data!.docs.map(
+                                    (comment) {
+                                      return ListTile(
+                                        title: Text("${comment["username"]}"),
+                                        subtitle: Text("${comment["comment"]}"),
+                                        trailing:
+                                            Text(comment["rating"].toString()),
+                                      );
+                                    },
+                                  ).toList(),
+                                );
+                              }
+                            } else {
+                              return const Center(
+                                child: CircularProgressIndicator(),
+                              );
+                            }
+                          },
+                        ),
+                      )
                     ],
                   );
                 } else if (snapshot.hasError) {
-                  return const SnackBar(
-                      content: Text("Some error occured. Please try again."));
+                  return const Text(
+                      "Some error occured. Please try again later.");
                 } else {
                   return const Center(
                     child: CircularProgressIndicator(),
@@ -326,6 +562,9 @@ class _CustomCardState extends State<CustomCastCard> {
                   Text(
                     widget.value.character!,
                     textAlign: TextAlign.center,
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 4,
+                    softWrap: true,
                     style: const TextStyle(
                       fontWeight: FontWeight.w300,
                     ),

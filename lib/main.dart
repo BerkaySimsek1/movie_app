@@ -23,7 +23,7 @@ class MyApp extends StatelessWidget {
         ),
       ],
       child: MaterialApp(
-        title: 'Flutter Demo',
+        title: 'Sinefy',
         debugShowCheckedModeBanner: false,
         theme: ThemeData.dark().copyWith(
             bottomNavigationBarTheme: const BottomNavigationBarThemeData(
