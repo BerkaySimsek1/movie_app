@@ -6,12 +6,14 @@ class CurrentUserComment {
   dynamic movieName;
   dynamic posterPath;
   dynamic movieID;
+  dynamic uid;
   CurrentUserComment({
     required this.comment,
     required this.rating,
     required this.movieName,
     required this.posterPath,
     required this.movieID,
+    required this.uid,
   });
   dynamic getDataMap() {
     return {
@@ -20,6 +22,7 @@ class CurrentUserComment {
       "movieName": movieName,
       "posterPath": posterPath,
       "movieID": movieID,
+      "uid": uid,
     };
   }
 }

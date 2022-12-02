@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:movie_app/consts/api.dart';
 import 'package:movie_app/models/movie_data_models/movies.dart';
 import 'package:movie_app/models/movie_data_models/search_movie.dart';
-import 'package:movie_app/screens/detail.dart';
+import 'package:movie_app/screens/detailpage/detail.dart';
 import 'package:movie_app/service/api2.dart';
 
 class SearchMovie extends StatefulWidget {
@@ -51,24 +51,23 @@ class _SearchMovieState extends State<SearchMovie> {
                 }
               },
               onChanged: (value) {
-                query = value;
-              },
-              decoration: const InputDecoration(hintText: "Search a movie")),
-          actions: [
-            IconButton(
-                onPressed: () {
-                  setState(() {
+                setState(() {
+                  query = value;
+                  if (query == "") {
+                    searchBar = true;
+                  } else {
                     searchBar = false;
                     page = 1;
-
-                    if (query == '') {
-                      searchBar = true;
-                    } else {
-                      getTotalPage();
-                    }
-                  });
-                },
-                icon: const Icon(Icons.search)),
+                    getTotalPage();
+                  }
+                });
+              },
+              decoration: const InputDecoration(hintText: "Search a movie")),
+          actions: const [
+            Padding(
+              padding: EdgeInsets.only(right: 8.0),
+              child: Icon(Icons.search),
+            ),
           ],
         ),
         body: Column(

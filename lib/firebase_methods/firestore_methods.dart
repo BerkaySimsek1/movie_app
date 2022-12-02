@@ -88,11 +88,11 @@ class FirestoreMethods {
     return ref.set(userDataMap);
   }
 
-  void validateAndSubmitComments(
-      String comment, String movieID, String username, double rating) async {
+  void validateAndSubmitComments(String comment, String movieID,
+      String username, double rating, String uid) async {
     try {
-      Comments comments =
-          Comments(comment: comment, username: username, rating: rating);
+      Comments comments = Comments(
+          comment: comment, username: username, rating: rating, uid: uid);
 
       await createorUpdateComments(comments.getDataMap(), movieID);
     } catch (err) {
@@ -117,14 +117,17 @@ class FirestoreMethods {
     double rating,
     String movieName,
     String posterPath,
+    String uid,
   ) async {
     try {
       CurrentUserComment comments = CurrentUserComment(
-          comment: comment,
-          rating: rating,
-          movieID: int.parse(movieID),
-          movieName: movieName,
-          posterPath: posterPath);
+        comment: comment,
+        rating: rating,
+        movieID: int.parse(movieID),
+        movieName: movieName,
+        posterPath: posterPath,
+        uid: uid,
+      );
 
       await createorUpdateCurrentUserComments(comments.getDataMap(), movieID);
     } catch (err) {

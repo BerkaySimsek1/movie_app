@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:movie_app/firebase_methods/auth_methods.dart';
-import 'package:movie_app/screens/login_screen.dart';
+import 'package:movie_app/screens/logInOutScreens/login_screen.dart';
 import 'package:movie_app/widgets/custom_text_field.dart';
 
 class SignUpScreen extends StatefulWidget {

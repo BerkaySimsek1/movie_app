@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:movie_app/consts/api.dart';
 import 'package:movie_app/firebase_methods/auth_methods.dart';
 import 'package:movie_app/firebase_methods/firestore_methods.dart';
-import 'package:movie_app/screens/detail.dart';
+import 'package:movie_app/screens/detailpage/detail.dart';
 
 class ProfileCommentPage extends StatefulWidget {
   const ProfileCommentPage({super.key});

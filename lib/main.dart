@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:movie_app/bloc/movie_next_page.dart';
 import 'package:movie_app/firebase_methods/auth_methods.dart';
 import 'package:movie_app/screens/bottom_nav_bar.dart';
-import 'package:movie_app/screens/login_screen.dart';
+import 'package:movie_app/screens/logInOutScreens/login_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

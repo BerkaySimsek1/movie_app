@@ -3,8 +3,8 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:movie_app/consts/api.dart';
 import 'package:movie_app/models/movie_data_models/movies.dart';
-import 'package:movie_app/screens/detail.dart';
-import 'package:movie_app/screens/see_all.dart';
+import 'package:movie_app/screens/detailpage/detail.dart';
+import 'package:movie_app/screens/seeAllScreens/see_all.dart';
 import 'package:movie_app/service/api2.dart';
 
 class MainPage extends StatefulWidget {
@@ -26,7 +26,7 @@ class _MainPageState extends State<MainPage> {
 
   Future<void> randomPage() async {
     randompage = Random().nextInt(500);
-    randomIndex = Random().nextInt(20);
+    randomIndex = Random().nextInt(19);
     setState(() {});
 
     List<Movies> list = await MovieDatas().getPopularMovies(randompage);

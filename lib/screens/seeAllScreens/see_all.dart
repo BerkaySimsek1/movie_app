@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:movie_app/bloc/movie_next_page.dart';
 import 'package:movie_app/consts/api.dart';
 import 'package:movie_app/models/movie_data_models/movies.dart';
-import 'package:movie_app/screens/detail.dart';
+import 'package:movie_app/screens/detailpage/detail.dart';
 import 'package:movie_app/service/api2.dart';
 
 class SeeAll extends StatefulWidget {
@@ -16,6 +16,7 @@ class SeeAll extends StatefulWidget {
 // provider ile sayfa atlamayı yap
 class _SeeAllState extends State<SeeAll> {
   ScrollController controller = ScrollController();
+
   @override
   void initState() {
     super.initState();

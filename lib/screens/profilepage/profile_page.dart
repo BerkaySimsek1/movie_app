@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:movie_app/firebase_methods/auth_methods.dart';
-import 'package:movie_app/screens/commentScreen.dart';
-import 'package:movie_app/screens/login_screen.dart';
+import 'package:movie_app/screens/profilepage/commentScreen.dart';
+import 'package:movie_app/screens/logInOutScreens/login_screen.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});

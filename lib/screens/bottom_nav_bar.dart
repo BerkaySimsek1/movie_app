@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:movie_app/screens/main_page.dart';
-import 'package:movie_app/screens/profile_page.dart';
-import 'package:movie_app/screens/search_movie.dart';
-import 'package:movie_app/screens/wacthlist.dart';
-import 'package:movie_app/screens/watched.dart';
+import 'package:movie_app/screens/mainpage/main_page.dart';
+import 'package:movie_app/screens/profilepage/profile_page.dart';
+import 'package:movie_app/screens/searchpage/search_movie.dart';
+import 'package:movie_app/screens/watclistAndWatchedPages/wacthlist.dart';
+import 'package:movie_app/screens/watclistAndWatchedPages/watched.dart';
 
 class BottomNavBar extends StatefulWidget {
   const BottomNavBar({super.key});

@@ -243,11 +243,15 @@ class _DetailPageState extends State<DetailPage> {
 
                                                       FirestoreMethods()
                                                           .validateAndSubmitComments(
-                                                        commentMovietf.text,
-                                                        value.id.toString(),
-                                                        username,
-                                                        rate,
-                                                      );
+                                                              commentMovietf
+                                                                  .text,
+                                                              value.id
+                                                                  .toString(),
+                                                              username,
+                                                              rate,
+                                                              Auth()
+                                                                  .currentuser!
+                                                                  .uid);
 
                                                       FirestoreMethods()
                                                           .validateAndSubmitCurrentUserComments(
@@ -256,6 +260,7 @@ class _DetailPageState extends State<DetailPage> {
                                                         rate,
                                                         value.title!,
                                                         value.posterPath!,
+                                                        Auth().currentuser!.uid,
                                                       );
 
                                                       isMovieInWatched();
@@ -397,49 +402,76 @@ class _DetailPageState extends State<DetailPage> {
                           },
                         ),
                       ),
-                      const Text(
-                        "Comments: ",
-                        style: TextStyle(fontSize: 24),
+                      const Padding(
+                        padding: EdgeInsets.only(top: 8.0, left: 8),
+                        child: Text(
+                          "Comments: ",
+                          style: TextStyle(fontSize: 24),
+                        ),
                       ),
-                      const Text(
-                        "(To make a comment you have to add this movie to watched.)",
-                        style: TextStyle(fontSize: 12),
+                      const Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 12.0),
+                        child: Text(
+                          "(To make a comment you have to add this movie to watched.)",
+                          style: TextStyle(fontSize: 12),
+                        ),
                       ),
 
-                      SizedBox(
-                        height: 200,
-                        child: StreamBuilder(
-                          stream: FirebaseFirestore.instance
-                              .collection("comments")
-                              .doc(value.id.toString())
-                              .collection("comment")
-                              .snapshots(),
-                          builder: (context, snapshot) {
-                            if (snapshot.hasData) {
-                              if (snapshot.data!.docs.isEmpty) {
-                                return const Center(
-                                    child: Text("There is no comment yet."));
-                              } else {
-                                return Column(
-                                  children: snapshot.data!.docs.map(
-                                    (comment) {
-                                      return ListTile(
-                                        title: Text("${comment["username"]}"),
-                                        subtitle: Text("${comment["comment"]}"),
-                                        trailing:
-                                            Text(comment["rating"].toString()),
-                                      );
-                                    },
-                                  ).toList(),
-                                );
-                              }
+                      StreamBuilder(
+                        stream: FirebaseFirestore.instance
+                            .collection("comments")
+                            .doc(value.id.toString())
+                            .collection("comment")
+                            .snapshots(),
+                        builder: (context, snapshot) {
+                          if (snapshot.hasData) {
+                            if (snapshot.data!.docs.isEmpty) {
+                              return const Padding(
+                                padding: EdgeInsets.only(top: 12.0),
+                                child: SizedBox(
+                                  height: 250,
+                                  child: Center(
+                                      child: Text("There is no comment yet.")),
+                                ),
+                              );
                             } else {
-                              return const Center(
-                                child: CircularProgressIndicator(),
+                              return Column(
+                                children: snapshot.data!.docs.map(
+                                  (comment) {
+                                    return ListTile(
+                                      title: Text("${comment["username"]}"),
+                                      subtitle: Text("${comment["comment"]}"),
+                                      trailing: SizedBox(
+                                        width: 70,
+                                        child: Row(
+                                          children: [
+                                            Text(comment["rating"].toString()),
+                                            (comment["uid"] ==
+                                                    Auth().currentuser!.uid)
+                                                ? IconButton(
+                                                    onPressed: () {
+                                                      FirestoreMethods()
+                                                          .deleteComment(value
+                                                              .id
+                                                              .toString());
+                                                    },
+                                                    icon: const Icon(
+                                                        Icons.delete))
+                                                : Container(),
+                                          ],
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                ).toList(),
                               );
                             }
-                          },
-                        ),
+                          } else {
+                            return const Center(
+                              child: CircularProgressIndicator(),
+                            );
+                          }
+                        },
                       )
                     ],
                   );
@@ -627,7 +659,11 @@ class CustomRecommendationCard extends StatelessWidget {
                         padding: const EdgeInsets.only(
                           left: 5.0,
                         ),
-                        child: Text(value.title!),
+                        child: Text(
+                          value.title!,
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 2,
+                        ),
                       ))
                 ],
               ),
