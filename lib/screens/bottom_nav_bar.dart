@@ -44,13 +44,13 @@ class _BottomNavBarState extends State<BottomNavBar> {
             icon: Icon(
               Icons.search,
             ),
-            label: "Search",
+            label: "Search"
           ),
           BottomNavigationBarItem(
               icon: Icon(
                 Icons.live_tv_sharp,
               ),
-              label: "Watchlist"),
+              label: "Watchlist")
           BottomNavigationBarItem(
               icon: Icon(
                 Icons.remove_red_eye_outlined,
@@ -60,7 +60,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
               icon: Icon(
                 Icons.account_circle,
               ),
-              label: "Profile"),
+              label: "Profile")
         ],
         currentIndex: _selectedIndex,
         onTap: onItemTapped,
