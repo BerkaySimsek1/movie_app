@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:movie_app/firebase_methods/auth_methods.dart';
 import 'package:movie_app/screens/profilepage/commentScreen.dart';
@@ -13,10 +14,10 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
   String username = "";
-
   @override
   void initState() {
     getUsername();
+
     super.initState();
   }
 
@@ -27,6 +28,7 @@ class _ProfilePageState extends State<ProfilePage> {
         .get()
         .then((value) => username = value.data()!["username"]);
     Future.delayed(const Duration(microseconds: 1));
+
     setState(() {});
   }
 
@@ -37,14 +39,7 @@ class _ProfilePageState extends State<ProfilePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const SizedBox(
-              width: 100,
-              height: 100,
-              child: CircleAvatar(
-                backgroundColor: Colors.red,
-                child: Text("Pic"),
-              ),
-            ),
+            const Text('pic'),
             Text(username),
             ElevatedButton(onPressed: () {}, child: const Text("Profile")),
             ElevatedButton(

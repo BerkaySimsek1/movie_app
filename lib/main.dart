@@ -2,6 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:movie_app/bloc/movie_next_page.dart';
+import 'package:movie_app/consts/colors.dart';
 import 'package:movie_app/firebase_methods/auth_methods.dart';
 import 'package:movie_app/screens/bottom_nav_bar.dart';
 import 'package:movie_app/screens/logInOutScreens/login_screen.dart';
@@ -26,10 +27,22 @@ class MyApp extends StatelessWidget {
         title: 'Sinefy',
         debugShowCheckedModeBanner: false,
         theme: ThemeData.dark().copyWith(
+            scaffoldBackgroundColor: Color.fromARGB(255, 16, 17, 47),
+            elevatedButtonTheme: ElevatedButtonThemeData(
+                style: ElevatedButton.styleFrom(
+              backgroundColor: Color(0xffc21858),
+              side: const BorderSide(color: Colors.black),
+              textStyle: const TextStyle(fontWeight: FontWeight.w700),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+            )),
             bottomNavigationBarTheme: const BottomNavigationBarThemeData(
-              unselectedItemColor: Colors.white,
-              selectedItemColor: Colors.blue,
-            ),
+                unselectedItemColor: Colors.white,
+                selectedItemColor: Colors.blue,
+                backgroundColor: Colors.transparent,
+                type: BottomNavigationBarType.fixed,
+                elevation: 0),
             appBarTheme: const AppBarTheme(
                 backgroundColor: Colors.transparent, elevation: 0)),
         home: StreamBuilder(

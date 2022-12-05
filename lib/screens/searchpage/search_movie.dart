@@ -91,25 +91,40 @@ class _SearchMovieState extends State<SearchMovie> {
                                               DetailPage(movieId: value.id!),
                                         ));
                                   },
-                                  child: SizedBox(
-                                      width: sizeWidth,
-                                      height: sizeHeight / 5,
-                                      child: Card(
-                                        child: Row(
-                                          children: [
-                                            (value.posterPath == null)
-                                                ? Image.network(
-                                                    defaultMovieImage)
-                                                : Image.network(
-                                                    "$imageBaseUrl${value.posterPath}",
-                                                    fit: BoxFit.fill,
-                                                  ),
-                                            SizedBox(
-                                                width: sizeWidth / 2,
-                                                child: Text(value.title!))
-                                          ],
-                                        ),
-                                      )),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 4.0),
+                                      child: SizedBox(
+                                          width: sizeWidth,
+                                          height: sizeHeight / 5,
+                                          child: Card(
+                                            color: Colors.transparent,
+                                            elevation: 0,
+                                            child: Row(
+                                              children: [
+                                                (value.posterPath == null)
+                                                    ? Image.network(
+                                                        defaultMovieImage)
+                                                    : Image.network(
+                                                        "$imageBaseUrl${value.posterPath}",
+                                                        fit: BoxFit.fill,
+                                                      ),
+                                                SizedBox(
+                                                  width: MediaQuery.of(context)
+                                                          .size
+                                                          .width /
+                                                      10,
+                                                ),
+                                                SizedBox(
+                                                    width: sizeWidth / 2,
+                                                    child: Text(value.title!))
+                                              ],
+                                            ),
+                                          )),
+                                    ),
+                                  ),
                                 );
                               });
                         } else {
@@ -150,6 +165,8 @@ class _SearchMovieState extends State<SearchMovie> {
                                               width: sizeWidth,
                                               height: sizeHeight / 5,
                                               child: Card(
+                                                elevation: 0,
+                                                color: Colors.transparent,
                                                 child: Row(
                                                   children: [
                                                     (value.posterPath == null)
@@ -159,6 +176,13 @@ class _SearchMovieState extends State<SearchMovie> {
                                                             "$imageBaseUrl${value.posterPath}",
                                                             fit: BoxFit.fill,
                                                           ),
+                                                    SizedBox(
+                                                      width:
+                                                          MediaQuery.of(context)
+                                                                  .size
+                                                                  .width /
+                                                              10,
+                                                    ),
                                                     SizedBox(
                                                         width: sizeWidth / 2,
                                                         child:

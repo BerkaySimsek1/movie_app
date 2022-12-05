@@ -2,6 +2,8 @@ import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:movie_app/consts/api.dart';
+import 'package:movie_app/consts/colors.dart';
+import 'package:movie_app/consts/numbers.dart';
 import 'package:movie_app/models/movie_data_models/movies.dart';
 import 'package:movie_app/screens/detailpage/detail.dart';
 import 'package:movie_app/screens/seeAllScreens/see_all.dart';
@@ -40,7 +42,7 @@ class _MainPageState extends State<MainPage> {
       appBar: AppBar(
         title: const Text(
           "Sinefy",
-          style: TextStyle(color: Colors.cyanAccent, fontSize: 32),
+          style: TextStyle(color: logoColor, fontSize: textSize2),
         ),
         actions: [
           TextButton(
@@ -54,7 +56,10 @@ class _MainPageState extends State<MainPage> {
                               DetailPage(movieId: randomMovieId)));
                 });
               },
-              child: const Text("Get a movie"))
+              child: const Text(
+                "Get a movie",
+                style: TextStyle(color: textbuttonColor, fontSize: textSize1),
+              ))
         ],
       ),
       body: Column(
@@ -81,7 +86,11 @@ class _MainPageState extends State<MainPage> {
                           ),
                         ));
                   },
-                  child: const Text("See all")),
+                  child: const Text(
+                    "See all",
+                    style:
+                        TextStyle(color: textbuttonColor, fontSize: textSize1),
+                  )),
             ],
           ),
           Expanded(
@@ -116,14 +125,18 @@ class _MainPageState extends State<MainPage> {
                     ),
                   )),
               TextButton(
-                  onPressed: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const SeeAll(whichList: ""),
-                        ));
-                  },
-                  child: const Text("See all"))
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const SeeAll(whichList: ""),
+                      ));
+                },
+                child: const Text(
+                  "See all",
+                  style: TextStyle(color: textbuttonColor, fontSize: textSize1),
+                ),
+              )
             ],
           ),
           Expanded(
@@ -174,9 +187,11 @@ class CustomCard extends StatelessWidget {
       child: Align(
         alignment: Alignment.topLeft,
         child: SizedBox(
-          height: 330,
-          width: 200,
+          height: height1,
+          width: width1,
           child: Card(
+            elevation: 0,
+            color: Colors.transparent,
             child: SizedBox(
               child: Column(
                 children: [
@@ -185,11 +200,22 @@ class CustomCard extends StatelessWidget {
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 8.0) +
                           const EdgeInsets.only(top: 7),
-                      child: SizedBox(
-                        width: 200,
-                        child: Image.network(
-                          "$imageBaseUrl${value.posterPath}",
-                          fit: BoxFit.fill,
+                      child: Container(
+                        width: width1,
+                        decoration: BoxDecoration(boxShadow: const [
+                          BoxShadow(
+                            blurRadius: 2.5,
+                            blurStyle: BlurStyle.outer,
+                            color: Colors.grey,
+                            offset: Offset(1, 1),
+                          )
+                        ], borderRadius: BorderRadius.circular(13)),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(13),
+                          child: Image.network(
+                            "$imageBaseUrl${value.posterPath}",
+                            fit: BoxFit.fill,
+                          ),
                         ),
                       ),
                     ),
@@ -199,9 +225,15 @@ class CustomCard extends StatelessWidget {
                       flex: 3,
                       child: Padding(
                         padding: const EdgeInsets.only(
-                          left: 5.0,
+                          left: padding2,
                         ),
-                        child: Text(value.title!),
+                        child: Align(
+                          alignment: Alignment.topLeft,
+                          child: Text(
+                            value.title!,
+                            style: TextStyle(fontSize: textSize1),
+                          ),
+                        ),
                       ))
                 ],
               ),

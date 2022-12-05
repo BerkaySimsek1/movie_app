@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 import 'package:movie_app/consts/api.dart';
 import 'package:movie_app/firebase_methods/auth_methods.dart';
 import 'package:movie_app/firebase_methods/firestore_methods.dart';
@@ -16,6 +17,9 @@ class _WatchedPageState extends State<WatchedPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        appBar: AppBar(
+          title: const Text('Movies You Watched'),
+        ),
         body: StreamBuilder(
             stream: FirebaseFirestore.instance
                 .collection("users")
@@ -52,31 +56,38 @@ class _WatchedPageState extends State<WatchedPage> {
                             child: Stack(
                               children: [
                                 Card(
+                                  elevation: 0,
+                                  color: Colors.transparent,
                                   child: SizedBox(
                                     child: Column(
                                       children: [
                                         Expanded(
-                                          flex: 14,
+                                          flex: 6,
                                           child: Padding(
                                             padding: const EdgeInsets.symmetric(
                                                     horizontal: 8.0) +
                                                 const EdgeInsets.only(top: 7),
                                             child: SizedBox(
                                               width: 200,
-                                              child: Image.network(
-                                                "$imageBaseUrl${watched["imagePath"]}",
-                                                fit: BoxFit.fill,
+                                              child: ClipRRect(
+                                                borderRadius:
+                                                    BorderRadius.circular(20),
+                                                child: Image.network(
+                                                  "$imageBaseUrl${watched["imagePath"]}",
+                                                  fit: BoxFit.fill,
+                                                ),
                                               ),
                                             ),
                                           ),
                                         ),
-                                        const Spacer(flex: 1),
                                         Expanded(
-                                            flex: 3,
+                                            flex: 1,
                                             child: Padding(
                                               padding:
                                                   const EdgeInsets.symmetric(
-                                                      horizontal: 4.0),
+                                                          horizontal: 4.0) +
+                                                      const EdgeInsets.only(
+                                                          top: 8),
                                               child: Text(watched["movieName"]),
                                             )),
                                         Text(
@@ -90,9 +101,46 @@ class _WatchedPageState extends State<WatchedPage> {
                                   right: 0,
                                   child: IconButton(
                                       onPressed: () {
-                                        FirestoreMethods()
-                                            .deleteWatched(watched.id);
-                                        setState(() {});
+                                        showDialog(
+                                          context: context,
+                                          builder: (context) {
+                                            return AlertDialog(actions: [
+                                              Align(
+                                                alignment: Alignment.center,
+                                                child: Lottie.asset(
+                                                    'assets/delete.json'),
+                                              ),
+                                              const Align(
+                                                alignment: Alignment.center,
+                                                child: Text('Are you sure?'),
+                                              ),
+                                              Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceEvenly,
+                                                children: [
+                                                  ElevatedButton(
+                                                      onPressed: () {
+                                                        FirestoreMethods()
+                                                            .deleteWatched(
+                                                                watched.id);
+                                                        FirestoreMethods()
+                                                            .deleteComment(
+                                                                watched.id);
+                                                        setState(() {});
+                                                        Navigator.pop(context);
+                                                      },
+                                                      child: const Text('Yes')),
+                                                  ElevatedButton(
+                                                      onPressed: () {
+                                                        Navigator.pop(context);
+                                                      },
+                                                      child: const Text('No')),
+                                                ],
+                                              )
+                                            ]);
+                                          },
+                                        );
                                       },
                                       icon: const Icon(
                                           Icons.delete_outline_rounded)),
