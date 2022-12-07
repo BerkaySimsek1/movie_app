@@ -39,7 +39,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
               icon: Icon(
                 Icons.home,
               ),
-              label: "Home Page"),
+              label: "Home"),
           BottomNavigationBarItem(
             icon: Icon(
               Icons.search,

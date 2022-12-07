@@ -1,9 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:movie_app/firebase_methods/auth_methods.dart';
-import 'package:movie_app/screens/profilepage/commentScreen.dart';
-import 'package:movie_app/screens/logInOutScreens/login_screen.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -14,6 +11,7 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
   String username = "";
+  String profilePic = '';
   @override
   void initState() {
     getUsername();
@@ -26,7 +24,10 @@ class _ProfilePageState extends State<ProfilePage> {
         .collection("users")
         .doc(Auth().currentuser!.uid)
         .get()
-        .then((value) => username = value.data()!["username"]);
+        .then((value) {
+      username = value.data()!["username"];
+      profilePic = value.data()!["profilePhoto"];
+    });
     Future.delayed(const Duration(microseconds: 1));
 
     setState(() {});
@@ -39,31 +40,69 @@ class _ProfilePageState extends State<ProfilePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Text('pic'),
-            Text(username),
-            ElevatedButton(onPressed: () {}, child: const Text("Profile")),
-            ElevatedButton(
-                onPressed: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => ProfileCommentPage(),
-                      ));
-                },
-                child: const Text("Comments")),
-            ElevatedButton(onPressed: () {}, child: const Text("Settings")),
-            ElevatedButton(
-                onPressed: () {
-                  Auth().logOut();
-                  Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const LoginScreen(),
-                      ));
-                },
-                child: const Text("Log out")),
+            profilePic == ''
+                ? Text('')
+                : SizedBox(
+                    height: 100,
+                    width: 100,
+                    child: ClipRRect(
+                        borderRadius: BorderRadius.circular(100),
+                        child: Image.network(
+                          profilePic,
+                          fit: BoxFit.cover,
+                        )),
+                  ),
+            Text(
+              username,
+              style: Theme.of(context)
+                  .textTheme
+                  .headline5
+                  ?.copyWith(fontWeight: FontWeight.w600),
+            ),
+            CustomElevatedButton(
+                pages: '/comments', text: 'Profile', isLogOut: false),
+            CustomElevatedButton(
+                pages: '/comments', text: 'Comments', isLogOut: false),
+            CustomElevatedButton(
+                pages: '/comments', text: 'Settings', isLogOut: false),
+            CustomElevatedButton(
+                pages: '/login', text: 'Log out', isLogOut: true)
           ],
         ),
+      ),
+    );
+  }
+}
+
+class CustomElevatedButton extends StatelessWidget {
+  CustomElevatedButton(
+      {Key? key,
+      required this.pages,
+      required this.text,
+      required this.isLogOut})
+      : super(key: key);
+  String pages, text;
+  bool isLogOut;
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: SizedBox(
+        width: 175,
+        height: 50,
+        child: ElevatedButton(
+            onPressed: () {
+              isLogOut
+                  ? {
+                      Navigator.pushReplacementNamed(context, pages),
+                      Auth().logOut()
+                    }
+                  : Navigator.pushNamed(context, pages);
+            },
+            child: Text(
+              text,
+              style: const TextStyle(fontSize: 15),
+            )),
       ),
     );
   }

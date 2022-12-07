@@ -4,11 +4,13 @@ class Comments {
   dynamic username;
   dynamic rating;
   dynamic uid;
+  dynamic profilePic;
   Comments({
     required this.comment,
     required this.username,
     required this.rating,
     required this.uid,
+    required this.profilePic,
   });
   dynamic getDataMap() {
     return {
@@ -16,6 +18,7 @@ class Comments {
       "username": username,
       "rating": rating,
       "uid": uid,
+      "profilePic": profilePic
     };
   }
 }

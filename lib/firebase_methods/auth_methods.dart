@@ -19,6 +19,8 @@ class Auth {
       {required String email,
       required String password,
       required String username,
+      String profilePhoto =
+          'https://soccerpointeclaire.com/wp-content/uploads/2021/06/default-profile-pic-e1513291410505.jpg',
       String res = "Some error occured"}) async {
     try {
       if (username.isNotEmpty && email.isNotEmpty && password.isNotEmpty) {
@@ -26,6 +28,7 @@ class Auth {
             email: email, password: password);
 
         AppUser user = AppUser(
+            profilePhoto: profilePhoto,
             email: email,
             password: password,
             username: username,
@@ -46,5 +49,9 @@ class Auth {
 
   Future<void> logOut() async {
     await _auth.signOut();
+  }
+
+  Future deleteUser() async {
+    _auth.currentUser!.delete();
   }
 }

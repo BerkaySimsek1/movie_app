@@ -33,6 +33,7 @@ class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
   double rate = 1;
   TextEditingController commentMovietf = TextEditingController();
   String username = "";
+  String profilePic = '';
   late final AnimationController _addedController;
   late final AnimationController _removedController;
   late Timer _timer;
@@ -42,7 +43,10 @@ class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
         .collection("users")
         .doc(Auth().currentuser!.uid)
         .get()
-        .then((value) => username = value.data()!["username"]);
+        .then((value) {
+      username = value.data()!["username"];
+      profilePic = value.data()!["profilePhoto"];
+    });
     Future.delayed(const Duration(microseconds: 1));
     setState(() {});
   }
@@ -348,6 +352,18 @@ class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
                                       return const SizedBox();
                                     } else {
                                       return ListTile(
+                                        leading: ClipRRect(
+                                          borderRadius:
+                                              BorderRadius.circular(100),
+                                          child: SizedBox(
+                                            height: 40,
+                                            width: 40,
+                                            child: Image.network(
+                                              '${comment['profilePic']}',
+                                              fit: BoxFit.contain,
+                                            ),
+                                          ),
+                                        ),
                                         title: Text("${comment["username"]}"),
                                         subtitle: Text("${comment["comment"]}"),
                                         trailing: SizedBox(
@@ -581,7 +597,8 @@ class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
                                             value.id.toString(),
                                             username,
                                             rate,
-                                            Auth().currentuser!.uid);
+                                            Auth().currentuser!.uid,
+                                            profilePic);
 
                                     FirestoreMethods()
                                         .validateAndSubmitCurrentUserComments(

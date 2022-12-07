@@ -89,10 +89,14 @@ class FirestoreMethods {
   }
 
   void validateAndSubmitComments(String comment, String movieID,
-      String username, double rating, String uid) async {
+      String username, double rating, String uid, String profilePic) async {
     try {
       Comments comments = Comments(
-          comment: comment, username: username, rating: rating, uid: uid);
+          comment: comment,
+          username: username,
+          rating: rating,
+          uid: uid,
+          profilePic: profilePic);
 
       await createorUpdateComments(comments.getDataMap(), movieID);
     } catch (err) {
@@ -148,5 +152,12 @@ class FirestoreMethods {
         .doc(user!.uid);
     ref.delete();
     ref2.delete();
+  }
+
+  updateProfilePhoto(String path) {
+    _firestore
+        .collection("users")
+        .doc(user!.uid)
+        .update({'profilePhoto': path});
   }
 }

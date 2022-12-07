@@ -2,10 +2,12 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:movie_app/bloc/movie_next_page.dart';
-import 'package:movie_app/consts/colors.dart';
 import 'package:movie_app/firebase_methods/auth_methods.dart';
 import 'package:movie_app/screens/bottom_nav_bar.dart';
 import 'package:movie_app/screens/logInOutScreens/login_screen.dart';
+import 'package:movie_app/screens/mainpage/main_page.dart';
+import 'package:movie_app/screens/profilepage/commentScreen.dart';
+import 'package:movie_app/screens/watclistAndWatchedPages/wacthlist.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -45,6 +47,12 @@ class MyApp extends StatelessWidget {
                 elevation: 0),
             appBarTheme: const AppBarTheme(
                 backgroundColor: Colors.transparent, elevation: 0)),
+        routes: {
+          '/profile': (context) => const MainPage(),
+          '/comments': (context) => const ProfileCommentPage(),
+          '/settings': (context) => const WatchList(),
+          '/login': (context) => const LoginScreen(),
+        },
         home: StreamBuilder(
           stream: Auth().authStateChanges,
           builder: (context, snapshot) {
