@@ -6,7 +6,10 @@ import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:movie_app/firebase_methods/auth_methods.dart';
+import 'package:movie_app/firebase_methods/firestore_methods.dart';
+import 'package:movie_app/screens/bottom_nav_bar.dart';
 import 'package:movie_app/screens/logInOutScreens/login_screen.dart';
+import 'package:movie_app/screens/logInOutScreens/widgets/customPhoto.dart';
 import 'package:path/path.dart';
 
 class AddingProfilephoto extends StatefulWidget {
@@ -21,40 +24,52 @@ class _AddingProfilephotoState extends State<AddingProfilephoto> {
       firebase_storage.FirebaseStorage.instance;
   File? _photo;
   final ImagePicker _picker = ImagePicker();
-  Future imgFromGallery() async {
-    final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
-    setState(() {
-      if (pickedFile != null) {
-        _photo = File(pickedFile.path);
-      } else {
-        print('No image selected');
-      }
-    });
-  }
-
-  Future imgFromCamera() async {
-    final pickedFile = await _picker.pickImage(source: ImageSource.camera);
-    setState(() {
-      if (pickedFile != null) {
-        _photo = File(pickedFile.path);
-      } else {
-        print('No image selected');
-      }
-    });
-  }
-
+  late String photoPath = defaultPhoto;
+  String defaultPhoto =
+      'https://soccerpointeclaire.com/wp-content/uploads/2021/06/default-profile-pic-e1513291410505.jpg';
+  int count = 0;
   Future uploadFile() async {
     if (_photo == null) return;
     final fileName = basename(_photo!.path);
     final destination = 'files/$fileName';
     try {
       final ref = firebase_storage.FirebaseStorage.instance
-          .ref(Auth().currentuser!.uid)
-          .child('');
-
+          .ref(destination)
+          .child('/file');
       await ref.putFile(_photo!);
+      photoPath = await ref.getDownloadURL();
+      FirestoreMethods().updateProfilePhoto(photoPath);
+
+      setState(() {});
     } catch (e) {
       print('Error occured');
+    }
+  }
+
+  Future imgFromGallery() async {
+    final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+
+    if (pickedFile != null) {
+      _photo = File(pickedFile.path);
+      uploadFile();
+      Future.delayed(Duration(microseconds: 1));
+
+      setState(() {});
+    } else {
+      print('No image selected');
+    }
+  }
+
+  Future imgFromCamera() async {
+    final pickedFile = await _picker.pickImage(source: ImageSource.camera);
+
+    if (pickedFile != null) {
+      _photo = File(pickedFile.path);
+      uploadFile();
+      Future.delayed(Duration(microseconds: 1));
+      setState(() {});
+    } else {
+      print('No image selected');
     }
   }
 
@@ -64,40 +79,41 @@ class _AddingProfilephotoState extends State<AddingProfilephoto> {
       appBar: AppBar(),
       body: Column(
         children: <Widget>[
-          SizedBox(
-            height: 32,
-          ),
           Center(
             child: GestureDetector(
-              onTap: () {
-                _showPicker(context);
-              },
-              child: CircleAvatar(
-                radius: 55,
-                backgroundColor: Color(0xffFDCF09),
+                onTap: () {
+                  showModalBottomSheet(
+                      context: context,
+                      builder: (BuildContext bc) {
+                        return SafeArea(
+                          child: Wrap(
+                            children: <Widget>[
+                              ListTile(
+                                  leading: const Icon(Icons.photo_library),
+                                  title: const Text('Gallery'),
+                                  onTap: () {
+                                    imgFromGallery();
+                                    setState(() {});
+                                    Navigator.of(context).pop();
+                                  }),
+                              ListTile(
+                                leading: const Icon(Icons.photo_camera),
+                                title: const Text('Camera'),
+                                onTap: () {
+                                  imgFromCamera();
+                                  setState(() {});
+                                  Navigator.of(context).pop();
+                                },
+                              ),
+                            ],
+                          ),
+                        );
+                      });
+                  setState(() {});
+                },
                 child: _photo != null
-                    ? ClipRRect(
-                        borderRadius: BorderRadius.circular(50),
-                        child: Image.file(
-                          _photo!,
-                          width: 100,
-                          height: 100,
-                          fit: BoxFit.fitHeight,
-                        ),
-                      )
-                    : Container(
-                        decoration: BoxDecoration(
-                            color: Colors.grey[200],
-                            borderRadius: BorderRadius.circular(50)),
-                        width: 100,
-                        height: 100,
-                        child: Icon(
-                          Icons.camera_alt,
-                          color: Colors.grey[800],
-                        ),
-                      ),
-              ),
-            ),
+                    ? customPP(photoPath: photoPath)
+                    : customPP(photoPath: defaultPhoto)),
           ),
           ElevatedButton(
               onPressed: () {
@@ -106,42 +122,13 @@ class _AddingProfilephotoState extends State<AddingProfilephoto> {
                 Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => LoginScreen(),
+                      builder: (context) => BottomNavBar(),
                     ));
               },
-              child: Text('Select profile picture'))
+              child: const Text('Select profile picture')),
+          const Text('It may take a while. Please wait')
         ],
       ),
     );
-  }
-
-  void _showPicker(context) {
-    showModalBottomSheet(
-        context: context,
-        builder: (BuildContext bc) {
-          return SafeArea(
-            child: Container(
-              child: Wrap(
-                children: <Widget>[
-                  ListTile(
-                      leading: Icon(Icons.photo_library),
-                      title: Text('Gallery'),
-                      onTap: () {
-                        imgFromGallery();
-                        Navigator.of(context).pop();
-                      }),
-                  ListTile(
-                    leading: Icon(Icons.photo_camera),
-                    title: Text('Camera'),
-                    onTap: () {
-                      imgFromCamera();
-                      Navigator.of(context).pop();
-                    },
-                  ),
-                ],
-              ),
-            ),
-          );
-        });
   }
 }

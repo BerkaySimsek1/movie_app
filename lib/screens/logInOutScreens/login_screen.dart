@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:movie_app/firebase_methods/auth_methods.dart';
 import 'package:movie_app/screens/bottom_nav_bar.dart';
 import 'package:movie_app/screens/logInOutScreens/sign_up.dart';
-import 'package:movie_app/widgets/custom_text_field.dart';
+import 'package:movie_app/screens/logInOutScreens/widgets/custom_text_field.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
