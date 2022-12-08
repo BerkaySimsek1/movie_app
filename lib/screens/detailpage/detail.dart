@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:math';
-
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -15,9 +14,11 @@ import 'package:movie_app/models/movie_data_models/credits.dart';
 import 'package:movie_app/models/movie_data_models/movie_detail.dart';
 import 'package:movie_app/models/movie_data_models/recommendations.dart';
 import 'package:movie_app/screens/detailpage/widgets/cards.dart';
-import 'package:movie_app/service/api2.dart';
-
-import '../../consts/numbers.dart';
+import 'package:movie_app/screens/detailpage/widgets/deleteComment.dart';
+import 'package:movie_app/screens/detailpage/widgets/getGenres.dart';
+import 'package:movie_app/screens/detailpage/widgets/posterAndTitle.dart';
+import 'package:movie_app/screens/detailpage/widgets/yearAndRating.dart';
+import 'package:movie_app/service/dioMethods.dart';
 
 class DetailPage extends StatefulWidget {
   const DetailPage({super.key, required this.movieId});
@@ -131,77 +132,11 @@ class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Stack(
-                        children: [
-                          SizedBox(
-                            width: sizeWidth,
-                            child: (value.backdropPath == null)
-                                ? Image.network(
-                                    defaultMovieImage,
-                                    height: 300,
-                                  )
-                                : Image.network(
-                                    "$imageBaseUrl${value.backdropPath}",
-                                    fit: BoxFit.fill,
-                                  ),
-                          ),
-                          Positioned(
-                            bottom: 2,
-                            child: Container(
-                              color: Colors.black38,
-                              constraints: BoxConstraints(maxWidth: sizeWidth),
-                              child: Text(
-                                value.title!,
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .headline4
-                                    ?.copyWith(color: Colors.white),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      customButtons(sizeWidth, context, value),
-
-                      Row(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(top: 8.0, left: 8),
-                            child: Text(
-                              "${value.releaseDate!.year}",
-                              style: const TextStyle(fontSize: 18),
-                            ),
-                          ),
-                          const SizedBox(
-                            width: 10,
-                          ),
-                          (value.voteAverage) == null
-                              ? const SizedBox()
-                              : Padding(
-                                  padding:
-                                      const EdgeInsets.only(top: 8.0, left: 8),
-                                  child: Row(
-                                    children: [
-                                      const Text(
-                                        'IMDb rating: ',
-                                        style: TextStyle(fontSize: 18),
-                                      ),
-                                      const Icon(
-                                        Icons.star,
-                                        color:
-                                            Color.fromARGB(255, 250, 239, 43),
-                                      ),
-                                      Text(
-                                        value.voteAverage!.toStringAsFixed(1),
-                                        style: const TextStyle(fontSize: 18),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                        ],
-                      ),
+                      posterAndTitle(sizeWidth: sizeWidth, value: value),
+                      addWatchedWatchlist(sizeWidth, context, value),
+                      yearAndRating(value: value),
                       Padding(
-                        padding: EdgeInsets.only(left: 8, top: 10),
+                        padding: const EdgeInsets.only(left: 8, top: 10),
                         child: Text(
                           'Overview',
                           style: Theme.of(context).textTheme.headline5,
@@ -215,36 +150,7 @@ class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
                           child: Text(value.overview!),
                         ),
                       ),
-                      SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        child: Row(
-                          children: [
-                            for (var e in value.genres!)
-                              Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 10) +
-                                        const EdgeInsets.only(left: 10),
-                                child: Container(
-                                  height: 40,
-                                  width: 85,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(30),
-                                    color: Colors.primaries[Random()
-                                        .nextInt(Colors.primaries.length)],
-                                  ),
-                                  child: Center(
-                                    child: Text(
-                                      textAlign: TextAlign.center,
-                                      "${Genres().listOfGenres[e.id]} ",
-                                      style: const TextStyle(fontSize: 16),
-                                    ),
-                                  ),
-                                ),
-                              )
-                          ],
-                        ),
-                      ),
-                      // bu kısımları da container ile sarmalayabilirsin belki
+                      getGenres(value: value),
                       Padding(
                         padding: const EdgeInsets.only(left: 8.0),
                         child: Text(
@@ -284,7 +190,6 @@ class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
                           },
                         ),
                       ),
-
                       Padding(
                         padding: const EdgeInsets.only(left: 8.0),
                         child: Text(
@@ -326,7 +231,6 @@ class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
                           style: TextStyle(fontSize: 12),
                         ),
                       ),
-
                       StreamBuilder(
                         stream: FirebaseFirestore.instance
                             .collection("comments")
@@ -379,61 +283,9 @@ class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
                                                   comment["rating"].toString()),
                                               (comment["uid"] ==
                                                       Auth().currentuser!.uid)
-                                                  ? IconButton(
-                                                      onPressed: () {
-                                                        showDialog(
-                                                          context: context,
-                                                          builder: (context) {
-                                                            return AlertDialog(
-                                                              actions: [
-                                                                Align(
-                                                                  alignment:
-                                                                      Alignment
-                                                                          .center,
-                                                                  child: Lottie
-                                                                      .asset(
-                                                                          'assets/delete.json'),
-                                                                ),
-                                                                const Align(
-                                                                  alignment:
-                                                                      Alignment
-                                                                          .center,
-                                                                  child: Text(
-                                                                      'Are you sure?'),
-                                                                ),
-                                                                Row(
-                                                                  mainAxisAlignment:
-                                                                      MainAxisAlignment
-                                                                          .spaceEvenly,
-                                                                  children: [
-                                                                    ElevatedButton(
-                                                                        onPressed:
-                                                                            () {
-                                                                          FirestoreMethods().deleteComment(value
-                                                                              .id
-                                                                              .toString());
-                                                                          Navigator.pop(
-                                                                              context);
-                                                                        },
-                                                                        child: const Text(
-                                                                            'Yes')),
-                                                                    ElevatedButton(
-                                                                        onPressed:
-                                                                            () {
-                                                                          Navigator.pop(
-                                                                              context);
-                                                                        },
-                                                                        child: const Text(
-                                                                            'No')),
-                                                                  ],
-                                                                )
-                                                              ],
-                                                            );
-                                                          },
-                                                        );
-                                                      },
-                                                      icon: const Icon(
-                                                          Icons.delete))
+                                                  ? deleteComment(
+                                                      value: value,
+                                                    )
                                                   : Container(),
                                             ],
                                           ),
@@ -451,7 +303,6 @@ class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
                           }
                         },
                       ),
-
                       const SizedBox(
                         height: 100,
                       )
@@ -471,7 +322,7 @@ class _DetailPageState extends State<DetailPage> with TickerProviderStateMixin {
     );
   }
 
-  Row customButtons(
+  Row addWatchedWatchlist(
       double sizeWidth, BuildContext context, MovieDetails value) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceAround,

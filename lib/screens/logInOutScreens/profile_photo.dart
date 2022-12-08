@@ -1,14 +1,9 @@
 import 'dart:io';
-
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:movie_app/firebase_methods/auth_methods.dart';
 import 'package:movie_app/firebase_methods/firestore_methods.dart';
 import 'package:movie_app/screens/bottom_nav_bar.dart';
-import 'package:movie_app/screens/logInOutScreens/login_screen.dart';
 import 'package:movie_app/screens/logInOutScreens/widgets/customPhoto.dart';
 import 'package:path/path.dart';
 

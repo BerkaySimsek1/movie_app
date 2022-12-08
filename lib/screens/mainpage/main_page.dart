@@ -1,14 +1,13 @@
 import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:movie_app/consts/api.dart';
 import 'package:movie_app/consts/colors.dart';
 import 'package:movie_app/consts/numbers.dart';
 import 'package:movie_app/models/movie_data_models/movies.dart';
 import 'package:movie_app/screens/detailpage/detail.dart';
+import 'package:movie_app/screens/mainpage/widgets/customTitle.dart';
 import 'package:movie_app/screens/mainpage/widgets/custom_card.dart';
-import 'package:movie_app/screens/seeAllScreens/see_all.dart';
-import 'package:movie_app/service/api2.dart';
+import 'package:movie_app/service/dioMethods.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
@@ -65,35 +64,7 @@ class _MainPageState extends State<MainPage> {
       ),
       body: Column(
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(left: 8.0),
-                child: Align(
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      "Popular Movies",
-                      style: Theme.of(context).textTheme.headline5,
-                    )),
-              ),
-              TextButton(
-                  onPressed: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const SeeAll(
-                            whichList: "Popular",
-                          ),
-                        ));
-                  },
-                  child: const Text(
-                    "See all",
-                    style:
-                        TextStyle(color: textbuttonColor, fontSize: textSize1),
-                  )),
-            ],
-          ),
+          customTitles(title: 'Popular Movies', whichList: 'Popular'),
           Expanded(
             flex: 2,
             child: FutureBuilder<List<Movies>>(
@@ -113,33 +84,7 @@ class _MainPageState extends State<MainPage> {
               },
             ),
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Align(
-                  alignment: Alignment.centerLeft,
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 8.0),
-                    child: Text(
-                      "Most Watched",
-                      style: Theme.of(context).textTheme.headline5,
-                    ),
-                  )),
-              TextButton(
-                onPressed: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const SeeAll(whichList: ""),
-                      ));
-                },
-                child: const Text(
-                  "See all",
-                  style: TextStyle(color: textbuttonColor, fontSize: textSize1),
-                ),
-              )
-            ],
-          ),
+          customTitles(title: 'Popular Movies', whichList: ''),
           Expanded(
             flex: 2,
             child: FutureBuilder<List<Movies>>(

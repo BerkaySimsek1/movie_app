@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:movie_app/firebase_methods/auth_methods.dart';
-import 'package:movie_app/models/comments.dart';
-import 'package:movie_app/models/current_user_comments.dart';
+import 'package:movie_app/models/comment_models/comments.dart';
+import 'package:movie_app/models/comment_models/current_user_comments.dart';
 import 'package:movie_app/models/favorites.dart';
 import 'package:movie_app/models/watched.dart';
 import 'package:movie_app/models/watchlist.dart';

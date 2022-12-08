@@ -1,10 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:lottie/lottie.dart';
-import 'package:movie_app/consts/api.dart';
 import 'package:movie_app/firebase_methods/auth_methods.dart';
-import 'package:movie_app/firebase_methods/firestore_methods.dart';
 import 'package:movie_app/screens/detailpage/detail.dart';
+import 'package:movie_app/screens/watclistAndWatchedPages/widgets/watchlistAlertDialog.dart';
+import 'package:movie_app/screens/watclistAndWatchedPages/widgets/watchlistCard.dart';
 
 class WatchList extends StatefulWidget {
   const WatchList({super.key});
@@ -54,87 +53,15 @@ class _WatchlistState extends State<WatchList> {
                           width: 200,
                           child: Stack(
                             children: [
-                              Card(
-                                color: Colors.transparent,
-                                elevation: 0,
-                                child: SizedBox(
-                                  child: Column(
-                                    children: [
-                                      Expanded(
-                                        flex: 14,
-                                        child: Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                                  horizontal: 8.0) +
-                                              const EdgeInsets.only(top: 7),
-                                          child: SizedBox(
-                                            width: 200,
-                                            child: ClipRRect(
-                                              borderRadius:
-                                                  BorderRadius.circular(20),
-                                              child: Image.network(
-                                                "$imageBaseUrl${watchlist["imagePath"]}",
-                                                fit: BoxFit.fill,
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                      const Spacer(flex: 1),
-                                      Expanded(
-                                          flex: 3,
-                                          child: Padding(
-                                            padding: const EdgeInsets.symmetric(
-                                                horizontal: 4.0),
-                                            child: Text(watchlist["movieName"]),
-                                          )),
-                                    ],
-                                  ),
-                                ),
+                              customWatchlistCard(
+                                watchlist: watchlist,
                               ),
                               Positioned(
                                 bottom: 25,
                                 right: 0,
-                                child: IconButton(
-                                    onPressed: () {
-                                      showDialog(
-                                        context: context,
-                                        builder: (context) {
-                                          return AlertDialog(actions: [
-                                            Align(
-                                              alignment: Alignment.center,
-                                              child: Lottie.asset(
-                                                  'assets/delete.json'),
-                                            ),
-                                            const Align(
-                                              alignment: Alignment.center,
-                                              child: Text('Are you sure?'),
-                                            ),
-                                            Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.spaceEvenly,
-                                              children: [
-                                                ElevatedButton(
-                                                    onPressed: () {
-                                                      FirestoreMethods()
-                                                          .deleteWatchlist(
-                                                              watchlist.id);
-                                                      setState(() {});
-                                                      Navigator.pop(context);
-                                                    },
-                                                    child: const Text('Yes')),
-                                                ElevatedButton(
-                                                    onPressed: () {
-                                                      Navigator.pop(context);
-                                                    },
-                                                    child: const Text('No')),
-                                              ],
-                                            )
-                                          ]);
-                                        },
-                                      );
-                                    },
-                                    icon: const Icon(
-                                        Icons.delete_outline_rounded)),
+                                child: customAlertDialog(
+                                  watchlist: watchlist,
+                                ),
                               ),
                             ],
                           ),

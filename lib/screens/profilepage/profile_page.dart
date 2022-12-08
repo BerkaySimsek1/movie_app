@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:movie_app/firebase_methods/auth_methods.dart';
+import 'package:movie_app/screens/profilepage/widgets/customProfilePage.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -14,12 +15,12 @@ class _ProfilePageState extends State<ProfilePage> {
   String profilePic = '';
   @override
   void initState() {
-    getUsername();
+    getUsernameAndPhoto();
 
     super.initState();
   }
 
-  Future<void> getUsername() async {
+  Future<void> getUsernameAndPhoto() async {
     await FirebaseFirestore.instance
         .collection("users")
         .doc(Auth().currentuser!.uid)
@@ -38,6 +39,7 @@ class _ProfilePageState extends State<ProfilePage> {
     return Scaffold(
       body: Center(
         child: Column(
+          mainAxisSize: MainAxisSize.max,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             profilePic == ''
@@ -60,49 +62,11 @@ class _ProfilePageState extends State<ProfilePage> {
                   ?.copyWith(fontWeight: FontWeight.w600),
             ),
             CustomElevatedButton(
-                pages: '/comments', text: 'Profile', isLogOut: false),
-            CustomElevatedButton(
                 pages: '/comments', text: 'Comments', isLogOut: false),
             CustomElevatedButton(
-                pages: '/comments', text: 'Settings', isLogOut: false),
-            CustomElevatedButton(
-                pages: '/login', text: 'Log out', isLogOut: true)
+                pages: '/login', text: 'Log out', isLogOut: true),
           ],
         ),
-      ),
-    );
-  }
-}
-
-class CustomElevatedButton extends StatelessWidget {
-  CustomElevatedButton(
-      {Key? key,
-      required this.pages,
-      required this.text,
-      required this.isLogOut})
-      : super(key: key);
-  String pages, text;
-  bool isLogOut;
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: SizedBox(
-        width: 175,
-        height: 50,
-        child: ElevatedButton(
-            onPressed: () {
-              isLogOut
-                  ? {
-                      Navigator.pushReplacementNamed(context, pages),
-                      Auth().logOut()
-                    }
-                  : Navigator.pushNamed(context, pages);
-            },
-            child: Text(
-              text,
-              style: const TextStyle(fontSize: 15),
-            )),
       ),
     );
   }

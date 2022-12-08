@@ -1,14 +1,8 @@
-import 'dart:io';
-import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:movie_app/firebase_methods/auth_methods.dart';
-import 'package:movie_app/firebase_methods/storage_methods.dart';
-import 'package:movie_app/screens/bottom_nav_bar.dart';
 import 'package:movie_app/screens/logInOutScreens/login_screen.dart';
 import 'package:movie_app/screens/logInOutScreens/profile_photo.dart';
 import 'package:movie_app/screens/logInOutScreens/widgets/custom_text_field.dart';
-import 'package:path/path.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});

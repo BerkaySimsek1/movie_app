@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:movie_app/consts/api.dart';
 import 'package:movie_app/models/movie_data_models/movies.dart';
 import 'package:movie_app/models/movie_data_models/search_movie.dart';
-import 'package:movie_app/screens/detailpage/detail.dart';
-import 'package:movie_app/service/api2.dart';
+import 'package:movie_app/screens/searchpage/widgets/customLists.dart';
+import 'package:movie_app/service/dioMethods.dart';
 
 class SearchMovie extends StatefulWidget {
   const SearchMovie({super.key});
@@ -27,10 +26,6 @@ class _SearchMovieState extends State<SearchMovie> {
     });
   }
 
-  @override
-
-  // infinite page yapmayı dene ve arama sonucu çıkmazsa sonuç çıkamdı farklı bir şekilde deneyin diye not bırak
-  // veya controller koyup top'a gelmeye çalış
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
@@ -78,55 +73,11 @@ class _SearchMovieState extends State<SearchMovie> {
                       future: MovieDatas().getTopRatedMovies(1),
                       builder: (context, snapshot) {
                         if (snapshot.hasData) {
-                          return ListView.builder(
-                              itemCount: snapshot.data!.length,
-                              itemBuilder: (context, index) {
-                                final value = snapshot.data![index];
-                                return GestureDetector(
-                                  onTap: () {
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) =>
-                                              DetailPage(movieId: value.id!),
-                                        ));
-                                  },
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          vertical: 4.0),
-                                      child: SizedBox(
-                                          width: sizeWidth,
-                                          height: sizeHeight / 5,
-                                          child: Card(
-                                            color: Colors.transparent,
-                                            elevation: 0,
-                                            child: Row(
-                                              children: [
-                                                (value.posterPath == null)
-                                                    ? Image.network(
-                                                        defaultMovieImage)
-                                                    : Image.network(
-                                                        "$imageBaseUrl${value.posterPath}",
-                                                        fit: BoxFit.fill,
-                                                      ),
-                                                SizedBox(
-                                                  width: MediaQuery.of(context)
-                                                          .size
-                                                          .width /
-                                                      10,
-                                                ),
-                                                SizedBox(
-                                                    width: sizeWidth / 2,
-                                                    child: Text(value.title!))
-                                              ],
-                                            ),
-                                          )),
-                                    ),
-                                  ),
-                                );
-                              });
+                          return defaultMovieList(
+                            sizeWidth: sizeWidth,
+                            sizeHeight: sizeHeight,
+                            snapshot: snapshot,
+                          );
                         } else {
                           return const Text("");
                         }
@@ -146,52 +97,11 @@ class _SearchMovieState extends State<SearchMovie> {
                               return Column(
                                 children: [
                                   Expanded(
-                                    child: ListView.builder(
-                                      controller: cont,
-                                      itemCount: snapshot.data!.length,
-                                      itemBuilder: (context, index) {
-                                        final value = snapshot.data![index];
-                                        return GestureDetector(
-                                          onTap: () {
-                                            Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      DetailPage(
-                                                          movieId: value.id!),
-                                                ));
-                                          },
-                                          child: SizedBox(
-                                              width: sizeWidth,
-                                              height: sizeHeight / 5,
-                                              child: Card(
-                                                elevation: 0,
-                                                color: Colors.transparent,
-                                                child: Row(
-                                                  children: [
-                                                    (value.posterPath == null)
-                                                        ? Image.network(
-                                                            defaultMovieImage)
-                                                        : Image.network(
-                                                            "$imageBaseUrl${value.posterPath}",
-                                                            fit: BoxFit.fill,
-                                                          ),
-                                                    SizedBox(
-                                                      width:
-                                                          MediaQuery.of(context)
-                                                                  .size
-                                                                  .width /
-                                                              10,
-                                                    ),
-                                                    SizedBox(
-                                                        width: sizeWidth / 2,
-                                                        child:
-                                                            Text(value.title!)),
-                                                  ],
-                                                ),
-                                              )),
-                                        );
-                                      },
+                                    child: SearchList(
+                                      cont: cont,
+                                      sizeWidth: sizeWidth,
+                                      sizeHeight: sizeHeight,
+                                      snapshot: snapshot,
                                     ),
                                   ),
                                   SizedBox(
