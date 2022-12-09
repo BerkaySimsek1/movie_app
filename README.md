@@ -1,16 +1,16 @@
-# movie_app
+# Movie App
 
-Movie app with firebase and TMDB API.
+This is a movie app that allows users to browse and search for movies, as well as save their favorite movies to a list. Also, they can comment on movies, and give points.
 
-## Getting Started
+## Features
 
-This project is a starting point for a Flutter application.
+-Firebase authentication for user login and registration
+-Firebase storage and firestore for storing user data and favorites
+-Lottie for animating loading and other UI elements
+-TMDB API for movie data
+-Dio package for making HTTP requests to the TMDB API
 
-A few resources to get you started if this is your first Flutter project:
+## Screenshots
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+<img src="https://user-images.githubusercontent.com/113512628/206766674-be19490a-5316-4d6b-adee-bdbbb4d3727c.png" width="200">
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
