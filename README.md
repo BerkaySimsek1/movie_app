@@ -1,6 +1,6 @@
 # Movie App
 
-This is a movie app that allows users to browse and search for movies, as well as save their favorite movies to a list. Also, they can comment on movies, and give points.
+This is a movie app that allows users to browse and search for movies, as well as save their favorite movies to a list. Also, they can comment on movies, and rate movies.
 
 ## Features
 
