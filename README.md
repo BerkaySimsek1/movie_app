@@ -4,11 +4,11 @@ This is a movie app that allows users to browse and search for movies, as well a
 
 ## Features
 
--Firebase authentication for user login and registration  
--Firebase storage and firestore for storing user data and favorites  
--Lottie for animating loading and other UI elements  
--TMDB API for movie data  
--Dio package for making HTTP requests to the TMDB API   
+-Firebase authentication for user login and registration.      
+-Firebase storage and firestore for storing user data.   
+-Using Lottie for engaging and dynamic animations.  
+-TMDB API for movie data.    
+-Dio package for making HTTP requests to the TMDB API .    
 
 
 ## Screenshots
